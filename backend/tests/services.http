@@ -1,0 +1,179 @@
+@baseUrl = {{$dotenv baseUrl}}
+@auth_token = {{login.response.body.$.access_token}}
+
+### First login to get auth token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=testpass123
+
+### Test AI chat completion
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant."
+    },
+    {
+      "role": "user",
+      "content": "Hello, how are you?"
+    }
+  ],
+  "character_id": 1,
+  "temperature": 0.7,
+  "max_tokens": 150
+}
+
+### Test AI chat completion with invalid parameters
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "messages": [],
+  "character_id": 999,
+  "temperature": 2.0,
+  "max_tokens": -1
+}
+
+### Test TTS generation
+POST {{baseUrl}}/tts/generate
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "Hello, this is a test message for text to speech conversion.",
+  "voice_id": "voice_1",
+  "speed": 1.0,
+  "pitch": 1.0
+}
+
+### Test TTS generation with invalid parameters
+POST {{baseUrl}}/tts/generate
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "",
+  "voice_id": "invalid_voice",
+  "speed": -1.0,
+  "pitch": 3.0
+}
+
+### Test TTS voices list
+GET {{baseUrl}}/tts/voices
+Authorization: Bearer {{auth_token}}
+
+### Test unauthorized AI chat access
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer invalid_token
+Content-Type: application/json
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Test message"
+    }
+  ],
+  "character_id": 1
+}
+
+### Test unauthorized TTS access
+POST {{baseUrl}}/tts/generate
+Authorization: Bearer invalid_token
+Content-Type: application/json
+
+{
+  "text": "Test message",
+  "voice_id": "voice_1"
+}
+
+### Test CORS preflight for AI chat
+OPTIONS {{baseUrl}}/ai/chat
+Origin: http://localhost:3000
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+
+### Test CORS preflight for TTS
+OPTIONS {{baseUrl}}/tts/generate
+Origin: http://localhost:3000
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+
+### Test AI chat with empty message
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": ""
+    }
+  ],
+  "character_id": 1
+}
+
+### Test TTS with long text
+POST {{baseUrl}}/tts/generate
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "This is a very long text that exceeds the normal length limit for text-to-speech conversion. It should be properly handled by the backend service without causing any errors or issues. The service should either process it in chunks or return an appropriate error message if the text is too long.",
+  "voice_id": "voice_1"
+}
+
+### Test AI chat with multiple turns
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant."
+    },
+    {
+      "role": "user",
+      "content": "What is the weather like?"
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have access to real-time weather information."
+    },
+    {
+      "role": "user",
+      "content": "Tell me a joke instead."
+    }
+  ],
+  "character_id": 1
+}
+
+### Test concurrent TTS requests
+POST {{baseUrl}}/tts/generate
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "First concurrent request",
+  "voice_id": "voice_1"
+}
+
+### Send immediately after previous request
+POST {{baseUrl}}/tts/generate
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "Second concurrent request",
+  "voice_id": "voice_1"
+}

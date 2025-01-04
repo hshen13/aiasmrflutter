@@ -1,0 +1,113 @@
+@baseUrl = {{$dotenv baseUrl}}
+@auth_token = {{login.response.body.$.access_token}}
+
+### First login to get auth token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=testpass123
+
+### Get all characters
+GET {{baseUrl}}/characters
+Authorization: Bearer {{auth_token}}
+
+### Create a new character
+# @name createCharacter
+POST {{baseUrl}}/characters
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Test Character",
+  "description": "A test character for API testing",
+  "personality": "Friendly and helpful",
+  "avatar_url": "https://example.com/avatar.jpg",
+  "voice_id": "voice_1",
+  "tags": ["test", "api"]
+}
+
+### Get character by ID
+GET {{baseUrl}}/characters/{{createCharacter.response.body.$.id}}
+Authorization: Bearer {{auth_token}}
+
+### Update character
+PUT {{baseUrl}}/characters/{{createCharacter.response.body.$.id}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Character",
+  "description": "An updated test character",
+  "personality": "Professional and efficient",
+  "avatar_url": "https://example.com/new-avatar.jpg",
+  "voice_id": "voice_2",
+  "tags": ["test", "api", "updated"]
+}
+
+### Delete character
+DELETE {{baseUrl}}/characters/{{createCharacter.response.body.$.id}}
+Authorization: Bearer {{auth_token}}
+
+### Test invalid character creation (missing required fields)
+POST {{baseUrl}}/characters
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Invalid Character"
+}
+
+### Test unauthorized access
+GET {{baseUrl}}/characters
+Authorization: Bearer invalid_token
+
+### Test CORS preflight for characters endpoint
+OPTIONS {{baseUrl}}/characters
+Origin: http://localhost:3000
+Access-Control-Request-Method: GET
+Access-Control-Request-Headers: Authorization
+
+### Test character creation with invalid data types
+POST {{baseUrl}}/characters
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": 123,
+  "description": ["invalid"],
+  "personality": {"invalid": "type"},
+  "avatar_url": null,
+  "voice_id": 456,
+  "tags": "not-an-array"
+}
+
+### Test update non-existent character
+PUT {{baseUrl}}/characters/999999
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Non-existent Character",
+  "description": "This character doesn't exist",
+  "personality": "N/A",
+  "avatar_url": "https://example.com/none.jpg",
+  "voice_id": "voice_1",
+  "tags": ["test"]
+}
+
+### Test delete non-existent character
+DELETE {{baseUrl}}/characters/999999
+Authorization: Bearer {{auth_token}}
+
+### Test character search
+GET {{baseUrl}}/characters?search=test
+Authorization: Bearer {{auth_token}}
+
+### Test character filtering by tags
+GET {{baseUrl}}/characters?tags=test,api
+Authorization: Bearer {{auth_token}}
+
+### Test pagination
+GET {{baseUrl}}/characters?page=1&limit=10
+Authorization: Bearer {{auth_token}}

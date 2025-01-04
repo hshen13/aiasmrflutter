@@ -1,0 +1,126 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "AI ASMR",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
+  "chatTitle": "Chat",
+  "@chatTitle": {
+    "description": "Title for the chat screen"
+  },
+
+  "profileTitle": "Profile",
+  "@profileTitle": {
+    "description": "Title for the profile screen"
+  },
+
+  "loginTitle": "Login",
+  "@loginTitle": {
+    "description": "Title for the login screen"
+  },
+
+  "registerTitle": "Register",
+  "@registerTitle": {
+    "description": "Title for the register screen"
+  },
+
+  "createCharacterTitle": "Create Character",
+  "@createCharacterTitle": {
+    "description": "Title for the create character screen"
+  },
+
+  "testConnectionTitle": "Test Connection",
+  "@testConnectionTitle": {
+    "description": "Title for the test connection screen"
+  },
+
+  "libraryTitle": "Library",
+  "@libraryTitle": {
+    "description": "Title for the library screen"
+  },
+
+  "messageInputHint": "Type a message...",
+  "@messageInputHint": {
+    "description": "Hint text for message input field"
+  },
+
+  "sendButton": "Send",
+  "@sendButton": {
+    "description": "Label for send message button"
+  },
+
+  "noChatsMessage": "No chats yet. Start a conversation!",
+  "@noChatsMessage": {
+    "description": "Message shown when there are no chats"
+  },
+
+  "startNewChatButton": "Start New Chat",
+  "@startNewChatButton": {
+    "description": "Label for start new chat button"
+  },
+
+  "errorSendingMessage": "Failed to send message: {error}",
+  "@errorSendingMessage": {
+    "description": "Error message when sending message fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+
+  "errorCreatingChat": "Failed to create chat: {error}",
+  "@errorCreatingChat": {
+    "description": "Error message when creating chat fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+
+  "errorInitializingChat": "Failed to initialize chat: {error}",
+  "@errorInitializingChat": {
+    "description": "Error message when initializing chat fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+
+  "loadingMessage": "Loading...",
+  "@loadingMessage": {
+    "description": "Message shown while loading"
+  },
+
+  "noChatSelectedMessage": "No chat selected",
+  "@noChatSelectedMessage": {
+    "description": "Message shown when no chat is selected"
+  },
+
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Label for home navigation item"
+  },
+
+  "navLibrary": "Library",
+  "@navLibrary": {
+    "description": "Label for library navigation item"
+  },
+
+  "navChat": "Chat",
+  "@navChat": {
+    "description": "Label for chat navigation item"
+  },
+
+  "navProfile": "Profile",
+  "@navProfile": {
+    "description": "Label for profile navigation item"
+  }
+}

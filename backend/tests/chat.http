@@ -1,0 +1,127 @@
+@baseUrl = {{$dotenv baseUrl}}
+@auth_token = {{login.response.body.$.access_token}}
+
+### First login to get auth token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=testpass123
+
+### Get all chats
+GET {{baseUrl}}/chats
+Authorization: Bearer {{auth_token}}
+
+### Create a new chat
+# @name createChat
+POST {{baseUrl}}/chats
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "character_id": 1,
+  "title": "Test Chat",
+  "description": "A test chat session"
+}
+
+### Get chat by ID
+GET {{baseUrl}}/chats/{{createChat.response.body.$.id}}
+Authorization: Bearer {{auth_token}}
+
+### Send message in chat
+# @name sendMessage
+POST {{baseUrl}}/chats/{{createChat.response.body.$.id}}/messages
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "content": "Hello, this is a test message",
+  "type": "text"
+}
+
+### Get chat messages
+GET {{baseUrl}}/chats/{{createChat.response.body.$.id}}/messages
+Authorization: Bearer {{auth_token}}
+
+### Update chat
+PUT {{baseUrl}}/chats/{{createChat.response.body.$.id}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Updated Chat Title",
+  "description": "Updated chat description"
+}
+
+### Delete chat
+DELETE {{baseUrl}}/chats/{{createChat.response.body.$.id}}
+Authorization: Bearer {{auth_token}}
+
+### Test invalid chat creation (missing required fields)
+POST {{baseUrl}}/chats
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Invalid Chat"
+}
+
+### Test unauthorized access
+GET {{baseUrl}}/chats
+Authorization: Bearer invalid_token
+
+### Test CORS preflight for chats endpoint
+OPTIONS {{baseUrl}}/chats
+Origin: http://localhost:3000
+Access-Control-Request-Method: GET
+Access-Control-Request-Headers: Authorization
+
+### Test sending invalid message type
+POST {{baseUrl}}/chats/{{createChat.response.body.$.id}}/messages
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "content": "Invalid message",
+  "type": "invalid_type"
+}
+
+### Test update non-existent chat
+PUT {{baseUrl}}/chats/999999
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Non-existent Chat",
+  "description": "This chat doesn't exist"
+}
+
+### Test delete non-existent chat
+DELETE {{baseUrl}}/chats/999999
+Authorization: Bearer {{auth_token}}
+
+### Test chat search
+GET {{baseUrl}}/chats?search=test
+Authorization: Bearer {{auth_token}}
+
+### Test chat pagination
+GET {{baseUrl}}/chats?page=1&limit=10
+Authorization: Bearer {{auth_token}}
+
+### Test message pagination
+GET {{baseUrl}}/chats/{{createChat.response.body.$.id}}/messages?page=1&limit=10
+Authorization: Bearer {{auth_token}}
+
+### Test sending message to non-existent chat
+POST {{baseUrl}}/chats/999999/messages
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "content": "Message to nowhere",
+  "type": "text"
+}
+
+### Test getting messages from non-existent chat
+GET {{baseUrl}}/chats/999999/messages
+Authorization: Bearer {{auth_token}}

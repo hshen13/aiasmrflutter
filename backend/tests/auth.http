@@ -1,0 +1,83 @@
+@baseUrl = {{$dotenv baseUrl}}
+
+### Register a new user
+# @name register
+POST {{baseUrl}}/auth/register
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=testpass123
+
+### Store auth token from registration response
+@auth_token = {{register.response.body.$.access_token}}
+
+### Login with the registered user
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=testpass123
+
+### Store auth token from login response
+@auth_token = {{login.response.body.$.access_token}}
+
+### Get current user info
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{auth_token}}
+
+### Test invalid login
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=wronguser&password=wrongpass
+
+### Test invalid token
+GET {{baseUrl}}/auth/me
+Authorization: Bearer invalid_token
+
+### Test missing credentials
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=&password=
+
+### Test CORS preflight for login
+OPTIONS {{baseUrl}}/auth/login
+Origin: http://localhost:3000
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+
+### Test CORS preflight for register
+OPTIONS {{baseUrl}}/auth/register
+Origin: http://localhost:3000
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+
+### Test CORS preflight for me endpoint
+OPTIONS {{baseUrl}}/auth/me
+Origin: http://localhost:3000
+Access-Control-Request-Method: GET
+Access-Control-Request-Headers: Authorization
+
+### Test register with existing username
+POST {{baseUrl}}/auth/register
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=anotherpass
+
+### Test login with wrong password
+POST {{baseUrl}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=wrongpass
+
+### Test register with short password
+POST {{baseUrl}}/auth/register
+Content-Type: application/x-www-form-urlencoded
+
+username=newuser&password=short
+
+### Test register with invalid characters
+POST {{baseUrl}}/auth/register
+Content-Type: application/x-www-form-urlencoded
+
+username=test@user&password=testpass123
